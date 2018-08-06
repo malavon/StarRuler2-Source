@@ -1174,7 +1174,7 @@ void romanNumerals(unsigned int numIn, char* romanOut) {
 std::string join(std::vector<std::string>& list, const char* delimiter, bool delim_final) {
 	int delim_len = strlen(delimiter);
 	int strs = list.size();
-	int len = delim_len * (strs - delim_final ? 1 : 0);
+	int len = delim_len * (strs - (delim_final ? 1 : 0));
 	for(int i = 0; i < strs; ++i)
 		len += list[i].size();
 
