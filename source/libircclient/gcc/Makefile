@@ -20,7 +20,7 @@ endif
 
 #Global flags
 ifeq ($(origin AR), default)
-	AR = gcc-ar
+	AR = ar
 endif
 BIN = libircclient.a
 SRCDIR = source/libircclient/src
@@ -28,6 +28,8 @@ SRCDIR = source/libircclient/src
 UNAME = $(shell uname)
 ifeq ($(UNAME), Darwin)
 	OSNAME = osx
+else ifeq ($(UNAME), FreeBSD)
+	OSNAME = fbsd
 else
 	OSNAME = lin
 endif

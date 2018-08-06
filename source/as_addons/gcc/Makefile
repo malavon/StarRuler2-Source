@@ -29,6 +29,10 @@ endif
 UNAME = $(shell uname)
 ifeq ($(UNAME), Darwin)
 	OSNAME = osx
+else ifeq ($(UNAME), FreeBSD)
+	OSNAME = fbsd
+	AR = ar
+	CC = cc
 else
 	OSNAME = lin
 endif

@@ -20,7 +20,7 @@ endif
 
 #Global flags
 ifeq ($(origin AR), default)
-	AR = gcc-ar
+	AR = ar
 endif
 BIN = libos.a
 SRCDIR = source/os/source
@@ -28,6 +28,8 @@ SRCDIR = source/os/source
 UNAME = $(shell uname)
 ifeq ($(UNAME), Darwin)
 	OSNAME = osx
+else ifeq ($(UNAME), FreeBSD)
+	OSNAME = fbsd
 else
 	OSNAME = lin
 endif
@@ -57,7 +59,7 @@ endif
 
 CXXFLAGS += -std=c++11
 CXXFLAGS += -Wall -Wno-invalid-offsetof -Wno-switch -Wno-reorder
-CXXFLAGS += -I./source/os/include -I./source/os/source -I./source/util/include
+CXXFLAGS += -I./source/os/include -I./source/os/source -I./source/util/include -I/usr/local/include
 
 #Source code files
 SOURCES = \

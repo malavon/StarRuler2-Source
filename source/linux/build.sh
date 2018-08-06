@@ -10,15 +10,15 @@ build_glfw() {
         export CC=/usr/bin/gcc
     fi
     CFLAGS="${ARCHFLAGS}" cmake -DCMAKE_AR=$(which $AR) -DCMAKE_RANLIB=$(which $RANLIB) .
-	CFLAGS="${ARCHFLAGS}" make glfw
+	CFLAGS="${ARCHFLAGS}" gmake glfw VERBOSE=1
 	cd ../../
 	cp source/glfw/src/libglfw3.a $ODIR/libglfw3.a
 }
 
 build_angelscript() {
 	cd source/angelscript/projects/gnuc
-	make clean
-	CXXFLAGS="$ARCHFLAGS" make all -j6
+	gmake clean
+	CXXFLAGS="$ARCHFLAGS" gmake all -j6
 	cd ../../../../
 	cp source/angelscript/lib/libangelscript.a $ODIR/libangelscript.a
 }
@@ -30,10 +30,10 @@ build_breakpad() {
 	else
 		./configure --build=x86_64
 	fi;
-	make clean
-	make -j6
+	gmake clean
+	gmake -j6
 	cp src/client/linux/libbreakpad_client.a ../../$ODIR/libbreakpad_client.a
-	make clean
+	gmake clean
 	cd ../../
 }
 
@@ -41,7 +41,12 @@ args=$@
 if [[ "$args" == "" ]]; then
 	args="32 libs 64 libs"
 fi
-if [[ "$(uname)" != "Darwin" ]]; then
+if [[ "$(uname)" = "FreeBSD" ]]; then
+    export OSNAME=fbsd
+    export CC=cc
+    export AR=ar
+    export RANLIB=ranlib
+elif [[ "$(uname)" != "Darwin" ]]; then
     export AR=gcc-ar
     export RANLIB=gcc-ranlib
     export CC=gcc

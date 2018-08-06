@@ -155,11 +155,11 @@ int getElementFlag(const std::string& name, bool addIfMissing) {
 				error("Error: Skin exceeded limit of 32 unique element flags.");
 			}
 
-			unsigned flag = nextElementFlag;
+			unsigned long long flag = nextElementFlag;
 			dynElementFlags[name] = flag;
 			dynFlagNames[flag] = name;
 
-			if(flag == 0x100000000)
+			if(flag == 0x100000000ull)
 				nextElementFlag = 0;
 			else
 				nextElementFlag = nextElementFlag << 1;

@@ -20,7 +20,7 @@ endif
 
 #Global flags
 ifeq ($(origin AR), default)
-	AR = gcc-ar
+	AR = ar
 endif
 BIN = libnetwork.a
 SRCDIR = source/network/source
@@ -28,6 +28,8 @@ SRCDIR = source/network/source
 UNAME = $(shell uname)
 ifeq ($(UNAME), Darwin)
 	OSNAME = osx
+else ifeq ($(UNAME), FreeBSD)
+	OSNAME = fbsd
 else
 	OSNAME = lin
 endif

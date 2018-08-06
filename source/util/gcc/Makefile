@@ -20,7 +20,7 @@ endif
 
 #Global flags
 ifeq ($(origin AR), default)
-	AR = gcc-ar
+	AR = ar
 endif
 BIN = libutil.a
 SRCDIR = source/util/source
@@ -28,6 +28,8 @@ SRCDIR = source/util/source
 UNAME = $(shell uname)
 ifeq ($(UNAME), Darwin)
 	OSNAME = osx
+else ifeq ($(UNAME), FreeBSD)
+	OSNAME = fbsd
 else
 	OSNAME = lin
 endif
@@ -54,6 +56,8 @@ endif
 ifeq ($(UNAME), Darwin)
 	CXXFLAGS += -I/usr/local/Cellar/libpng/1.6.12/include
 	LDFLAGS += -L/usr/local/Cellar/libpng/1.6.12/lib
+else ifeq ($(UNAME), FreeBSD)
+	CXXFLAGS += -I/usr/local/include
 endif
 
 ifndef CC

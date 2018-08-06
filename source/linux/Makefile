@@ -9,6 +9,8 @@ UNAME = $(shell uname)
 
 ifeq ($(UNAME), Darwin)
 	OSNAME = osx
+else ifeq ($(UNAME), FreeBSD)
+	OSNAME = fbsd
 else
 	OSNAME = lin
 endif
@@ -78,10 +80,10 @@ CXXFLAGS += -std=c++11
 CXXFLAGS += -DLIN_MODE -DGLIBCXX_USE_NANOSLEEP
 CXXFLAGS += -Wall -Wno-invalid-offsetof -Wno-switch -Wno-reorder
 CXXFLAGS += -Wno-unused-local-typedefs
-CXXFLAGS += -Wuninitialized -Wmaybe-uninitialized
+CXXFLAGS += -Wuninitialized 
 CXXFLAGS += -Werror=return-type
 CXXFLAGS += -I./source/game -I./source/angelscript/include
-CXXFLAGS += -I/usr/include/freetype2 -isystem./source/glfw/include
+CXXFLAGS += -isystem./source/glfw/include
 CXXFLAGS += -I./source/sound/include
 CXXFLAGS += -I./source/as_addons/include -I./source/os/include
 CXXFLAGS += -I./source/libircclient/include
@@ -110,6 +112,17 @@ ifeq ($(UNAME), Darwin)
 	CXXFLAGS += -framework OpenAL
 
 	LDFLAGS += -lcurl
+else ifeq ($(UNAME), FreeBSD)
+        CXXFLAGS += -I/usr/local/include
+        CXXFLAGS += -I/usr/local/include/freetype2
+
+	LDFLAGS += -L/usr/local/lib
+        ifndef DEBUG
+                LDFLAGS += -Lsource/lib/fbsd$(ARCH)
+        endif
+	LDFLAGS += -lexecinfo -linotify
+	# these are the same as linux
+        LDFLAGS += -lGL -lGLU -lX11 -lXrandr -lXxf86vm -lXi -lopenal -lcurl
 else
 	ifndef DEBUG
 		LDFLAGS += -Lsource/lib/lin$(ARCH)
@@ -119,7 +132,8 @@ else
 endif
 
 #Libraries
-LDFLAGS += -lstdc++ -lGLEW -lpng -lz -lpthread
+#LDFLAGS += -lstdc++ -lGLEW -lpng -lz -lpthread
+LDFLAGS += -lc++ -lGLEW -lpng -lz -lpthread
 LDFLAGS += -lm -lfreetype
 LDFLAGS += -lvorbisfile
 
@@ -307,6 +321,12 @@ DEP_FILES = $(addprefix $(OBJDIR)/, $(SOURCES:.cpp=.d))
 
 -include $(DEP_FILES)
 
+help:
+	@echo uname = ${UNAME}
+	@echo cxxflags = ${CXXFLAGS}
+	@echo ldflags = ${LDFLAGS}
+	@echo make = ${MAKE}
+
 compile: $(DEP_FILES) $(BINDIR)/$(BIN)
 master_server: $(BINDIR)/$(MS_BIN)
 
@@ -324,6 +344,7 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 #Complete binary compile
 $(BINDIR)/$(BIN): makelibs $(OBJ_FILES) $(LIB_FILES) $(COPY_LIBS)
 	@mkdir -p $(BINDIR)
+	@echo $(CC) $(CXXFLAGS) $(LDFLAGS) $(OBJ_FILES) $(LIB_FILES) -o $@
 	@$(CC) $(CXXFLAGS) $(LDFLAGS) $(OBJ_FILES) $(LIB_FILES) -o $@
 
 makelibs:
@@ -344,7 +365,7 @@ makelibs:
 
 $(BINDIR)/$(MS_BIN): $(OBJDIR)/master_server.o $(LIBDIR)/libnetwork.a $(LIBDIR)/libos.a
 	@mkdir -p $(BINDIR)
-	@$(CC) $(CXXFLAGS) -lstdc++ -lpthread -lm $^ -o $@
+	@$(CC) $(CXXFLAGS) -lc++ -lpthread -lm $^ -o $@
 
 patcher: $(LIB_FILES)
 	@$(CC) $(CXXFLAGS) $(LDFLAGS) source/patcher/patcher/patcher.cpp $(LIB_FILES) -o $(BINDIR)/Patcher.bin

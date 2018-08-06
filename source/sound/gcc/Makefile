@@ -20,7 +20,7 @@ endif
 
 #Global flags
 ifeq ($(origin AR), default)
-	AR = gcc-ar
+	AR = ar
 endif
 BIN = libsound.a
 SRCDIR = source/sound/source
@@ -28,6 +28,8 @@ SRCDIR = source/sound/source
 UNAME = $(shell uname)
 ifeq ($(UNAME), Darwin)
 	OSNAME = osx
+else ifeq ($(UNAME), FreeBSD)
+	OSNAME = fbsd
 else
 	OSNAME = lin
 endif
@@ -59,7 +61,8 @@ CXXFLAGS += -std=c++11 -DLIN_MODE
 CXXFLAGS += -Wall -Wno-invalid-offsetof -Wno-switch -Wno-reorder
 CXXFLAGS += -I./source/sound/include -I./source/sound/source
 CXXFLAGS += -I./source/sound/OpenALSoft -isystem./source/sound/vorbis
-CXXFLAGS += -I./source/sound/ogg -I./source/os/include
+#CXXFLAGS += -I./source/sound/ogg -I./source/os/include
+CXXFLAGS += -I/usr/local/include -I/usr/local/include/ogg -I./source/os/include
 
 #Source code files
 SOURCES = \
