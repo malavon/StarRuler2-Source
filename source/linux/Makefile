@@ -133,7 +133,7 @@ endif
 
 #Libraries
 #LDFLAGS += -lstdc++ -lGLEW -lpng -lz -lpthread
-LDFLAGS += -lc++ -lGLEW -lpng -lz -lpthread
+LDFLAGS += -lstdc++ -lGLEW -lpng -lz -lpthread
 LDFLAGS += -lm -lfreetype
 LDFLAGS += -lvorbisfile
 
@@ -323,6 +323,7 @@ DEP_FILES = $(addprefix $(OBJDIR)/, $(SOURCES:.cpp=.d))
 
 help:
 	@echo uname = ${UNAME}
+	@echo cc = ${CC}
 	@echo cxxflags = ${CXXFLAGS}
 	@echo ldflags = ${LDFLAGS}
 	@echo make = ${MAKE}
